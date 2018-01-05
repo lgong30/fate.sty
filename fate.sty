@@ -2,78 +2,377 @@
 \ProvidesPackage{fate}[2017/11/02 Fate Series Package]
 
 \@ifpackageloaded{lmodern}{% already included
-\PackageInfo{lecture}{Package lmodern was already included}
+\PackageInfo{fate}{Package lmodern was already included}
 }
 {% not included
 \RequirePackage{lmodern}
 }
 
 \@ifpackageloaded{ifthen}{% already included
-\PackageInfo{lecture}{Package ifthen was already included}
+\PackageInfo{fate}{Package ifthen was already included}
 }
 {% not included
 \RequirePackage{ifthen}
 }
 
 \@ifpackageloaded{latexsym}{% already included
-\PackageInfo{lecture}{Package latexsym was already included}
+\PackageInfo{fate}{Package latexsym was already included}
 }
 {% not included
 \RequirePackage{latexsym}
 }
 
 \@ifpackageloaded{amsmath}{% already included
-\PackageInfo{lecture}{Package amsmath was already included}
+\PackageInfo{fate}{Package amsmath was already included}
 }
 {% not included
 \RequirePackage{amsmath}
 }
 
+
 \@ifpackageloaded{amssymb}{% already included
-\PackageInfo{lecture}{Package amssymb was already included}
+\PackageInfo{fate}{Package amssymb was already included}
 }
 {% not included
 \RequirePackage{amssymb}
 }
 
 \@ifpackageloaded{amsthm}{% already included
-\PackageInfo{lecture}{Package amsthm was already included}
+\PackageInfo{fate}{Package amsthm was already included}
 }
 {% not included
 \RequirePackage{amsthm}
 }
 
 \@ifpackageloaded{graphicx}{% already included
-\PackageInfo{lecture}{Package graphicx was already included}
+\PackageInfo{fate}{Package graphicx was already included}
 }
 {% not included
 \RequirePackage{graphicx}
 }
 
 \@ifpackageloaded{hyperref}{% already included
-\PackageInfo{lecture}{Package hyperref was already included}
+\PackageInfo{fate}{Package hyperref was already included}
 }
 {% not included
 \RequirePackage{hyperref}
 }
 
-\@ifpackageloaded{subfig}{% already included
-\PackageInfo{lecture}{Package subfig was already included}
+\@ifpackageloaded{subfloat}{% already included
+\PackageInfo{fate}{Package subfig was already included}
 }
 {% not included
-\RequirePackage{subfig}
+\RequirePackage{subfloat}
 }
 
+\@ifpackageloaded{etoolbox}{% already included
+\PackageInfo{fate}{Package etoolbox was already included}
+}
+{% not included
+\RequirePackage{etoolbox}
+}
+
+\@ifpackageloaded{aliascnt}{% already included
+\PackageInfo{fate}{Package aliascnt was already included}
+}
+{% not included
+\RequirePackage{aliascnt}
+}
 \@ifpackageloaded{babel}{% already included
-\PackageInfo{lecture}{Package babel was already included}
+\PackageInfo{fate}{Package babel was already included}
 }
 {% not included
 \RequirePackage[english]{babel}
 }
 
 \@ifpackageloaded{inputenc}{% already included
-\PackageInfo{lecture}{Package inputenc was already included}
+\PackageInfo{fate}{Package inputenc was already included}
 }
 {% not included
 \RequirePackage[utf8]{inputenc}
 }
+
+\@ifpackageloaded{fullpage}{% already included
+\PackageInfo{fate}{Package fullpage was already included}
+}
+{% not included
+\RequirePackage{fullpage}
+}
+
+\@ifpackageloaded{enumerate}{% already included
+\PackageInfo{fate}{Package enumerate was already included}
+}
+{% not included
+\RequirePackage{enumerate}
+}
+
+\@ifpackageloaded{tikz}{% already included
+\PackageInfo{fate}{Package tikz was already included}
+}
+{% not included
+\RequirePackage{tikz}
+}
+
+\@ifpackageloaded{cite}{% already included
+\PackageInfo{fate}{Package cite was already included}
+}
+{% not included
+\RequirePackage[sort,compress]{cite}
+}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+%% use "autoref" the way I want
+%   autoref is nice because the text or brackets of a ref are part of link
+%   see http://tex.stackexchange.com/questions/36575/autorefs-inserted-text-has-not-the-correct-case
+%       http://en.wikibooks.org/wiki/LaTeX/Labels_and_Cross-referencing
+%       http://www.tug.org/applications/hyperref/manual.html#TBL-23
+
+%% define autoref name for sections
+% \ifx\sectionautorefname\defined
+\def\sectionautorefname{\S\!\!}
+\def\subsectionautorefname{\S\!\!}
+\def\subsubsectionautorefname{\S\!\!}
+% \fi
+% from http://tex.stackexchange.com/questions/52410/how-to-use-the-command-autoref-to-implement-the-same-effect-when-use-the-comman
+% \ifx\equationautorefname~#1\undefined
+\def\equationautorefname~#1\null{%
+  (#1)\null
+}
+% \fi%
+\newcommand*{\subfigureautorefname}{Figure}
+
+% begin appendix autoref patch [\autoref subsections in appendix](http://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix)
+\RequirePackage{appendix}
+
+\patchcmd{\hyper@makecurrent}{%
+    \ifx\Hy@param\Hy@chapterstring
+        \let\Hy@param\Hy@chapapp
+    \fi
+}{%
+    \iftoggle{inappendix}{%true-branch
+        % list the names of all sectioning counters here
+        \@checkappendixparam{chapter}%
+        \@checkappendixparam{section}%
+        \@checkappendixparam{subsection}%
+        \@checkappendixparam{subsubsection}%
+        \@checkappendixparam{paragraph}%
+        \@checkappendixparam{subparagraph}%
+    }{}%
+}{}{\errmessage{failed to patch 1}}
+
+\newcommand*{\@checkappendixparam}[1]{%
+    \def\@checkappendixparamtmp{#1}%
+    \ifx\Hy@param\@checkappendixparamtmp
+        \let\Hy@param\Hy@appendixstring
+    \fi
+}
+
+\newtoggle{inappendix}
+\togglefalse{inappendix}
+
+\apptocmd{\appendix}{\toggletrue{inappendix}}{}{\errmessage{failed to patch}}
+\apptocmd{\subappendices}{\toggletrue{inappendix}}{}{\errmessage{failed to patch}}
+% end appendix autoref patch
+
+
+%% Provide commands theorem & lemma & definition
+\ifcsundef{theorem}{% theorem is not defined yet
+\newtheorem{theorem}{Theorem}%[section]
+}{}
+
+%% from https://tex.stackexchange.com/questions/187388/amsthm-with-shared-counters-messes-up-autoref-references
+\newaliascnt{corollaryTh}{theorem}% alias counter "<newTh>"
+\newtheorem{corollary}[corollaryTh]{Corollary}
+\aliascntresetthe{corollaryTh}
+\providecommand*{\corollaryThautorefname}{Corollary} % name for \autoref
+
+\newaliascnt{lemmaTh}{theorem}% alias counter "<newTh>"
+\newtheorem{lemma}[lemmaTh]{Lemma}
+\aliascntresetthe{lemmaTh}
+\providecommand*{\lemmaThauthorefname}{Corollary} % name for \autoref
+
+\newaliascnt{propositionTh}{theorem}% alias counter "<newTh>"
+\newtheorem{proposition}[propositionTh]{Proposition}
+\aliascntresetthe{propositionTh}
+\providecommand*{\propositionThauthorefname}{Proposition} % name for \autoref
+
+\newtheorem{definition}{Definition}
+\providecommand*{\definitionautorefname}{Definition}
+\newtheorem{claim}{Claim}
+\providecommand*{\claimautorefname}{Claim}
+\newtheorem{fact}{Fact}
+\providecommand*{\factautorefname}{Fact}
+\newtheorem{assumption}{Assumption}
+\providecommand*{\assumptionautorefname}{Assumption}
+
+
+%% tikz library
+%\usetikzlibrary{shapes,arrows,positioning}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc,shapes.multipart,shapes.arrows,chains,fit,shapes.misc,shadings}
+
+
+%----- save space
+\newenvironment{sitemize}{%
+  \begin{list}{$\bullet$}{%
+    %\setlength{\rightmargin}{\leftmargin}
+    \setlength{\itemsep}{0.1cm}%
+    \setlength{\leftmargin}{1.0em}%
+    \setlength{\topsep}{0.1cm}%
+    \setlength{\parsep}{0mm}}%
+  }{\end{list}}
+
+\newenvironment{senumerate}{%
+   \begin{list}{\arabic{enumi}.}{%
+    \setlength\labelwidth{3.5em}%
+    \setlength\leftmargin{2.5em}%
+    \setlength{\topsep}{2pt plus 2pt minus 2pt}%
+    \setlength\itemsep{0.0cm}%
+    \usecounter{enumi}}%
+  }{\end{list}}
+
+%% ----------------------------------------------------
+%% create wrapper for these macros and Sublime Snippets
+%% ----------------------------------------------------
+\ifx\theoremautorefname\undefined
+\newcommand{\theoremautorefname}{Theorem}
+\fi
+
+\providecommand*{\code}{\ttfamily}
+\providecommand*{\email}[1]{%
+    \normalsize\href{mailto:#1}{#1}\par
+    }
+
+%% macros for column used lengths
+%----- Figure to file mappings
+%% on Linux 
+% \graphicspath{ {.},{figures/},{figures/new/} }
+%% on Mac
+% \graphicspath{ {figures/new/} }
+
+\newlength{\fullup}
+
+\newlength{\oneup}
+\newlength{\twoup}
+\newlength{\threeup}
+\newlength{\fourup}
+
+%% check the difference between \textwidth and \columnwidth
+\setlength{\fullup}{0.95\textwidth}
+\setlength{\oneup}{0.45\textwidth}
+\setlength{\twoup}{0.42\textwidth}
+\setlength{\threeup}{0.31\textwidth}
+\setlength{\fourup}{0.2\textwidth}
+
+%% + sign for tikz
+\providecommand*{\plus}{\raisebox{.4\height}{\scalebox{.6}{+}}}
+\providecommand*{\minus}{\raisebox{.4\height}{\scalebox{.6}{-}}}
+
+\def\bJ{\mathbf{J}_{\vth}}
+\def\bW{\mathbf{W}_{\vth}}
+\def\bG{\mathbf{G}_{\vth}}
+\def\bA{\mathbf{A}}
+\def\bC{\mathbf{C}}
+\def\bD{\mathbf{D}}
+\def\bE{\mathbf{E}}
+\def\bH{\mathbf{H}_{\vth}}
+\def\bM{\mathbf{M}}
+\def\bN{\mathbf{N}}
+\def\bP{\mathbf{P}}
+\def\bW{\mathbf{W}}
+\def\bU{\mathbf{U}}
+\def\bQ{\mathbf{Q}}
+\def\bV{\mathbf{V}}
+\def\bF{\mathbf{F}}
+\def\bK{\mathbf{K}}
+\def\bS{\mathbf{S}}
+\def\bT{\mathbf{T}}
+\def\bX{\mathbf{X}}
+\def\bY{\mathbf{Y}}
+\def\bZ{\mathbf{Z}}
+\def\bB{\mathbf{B}}
+\def\bTheta{\boldsymbol{\Theta}}
+\def\vec{\mathrm{vec}}
+\def\bee{\mathbf{e}}
+\def\baa{\mathbf{a}}
+\def\br{\mathbf{r}}
+\def\bc{\mathbf{c}}
+\def\bu{\mathbf{u}}
+\def\bv{\mathbf{v}}
+\def\bx{\mathbf{x}}
+\def\bbx{\mathbf{\bar{x}}}
+\def\by{\mathbf{y}}
+\def\bby{\mathbf{\bar{y}}}
+\def\bz{\mathbf{z}}
+\def\bw{\mathbf{w}}
+\def\bd{\mathbf{d}}
+\def\bb{\mathbf{b}}
+\def\bp{\mathbf{p}}
+\def\cc{\mathbf{\bar c}}
+\def\bI{\mathbf{\tilde I}}
+\def\rank{\text{rank}}
+\def\diag{\text{diag}}
+\def\tbX{\textit{\textbf{X}}}
+\def\tbR{\textit{\textbf{R}}}
+\def\tbC{\textit{\textbf{C}}}
+\def\tbU{\textit{\textbf{U}}}
+\def\tbV{\textit{\textbf{V}}}
+\def\tbY{\textit{\textbf{Y}}}
+\def\tbZ{\textit{\textbf{Z}}}
+
+\def\tcX{\textit{\boldsymbol{mathcal{X}}}}
+
+\def\cA{\mathcal{A}}
+\def\cB{\mathcal{B}}
+\def\cC{\mathcal{C}}
+\def\cD{\mathcal{D}}
+\def\cE{\mathcal{E}}
+\def\cF{\mathcal{F}}
+\def\cG{\mathcal{G}}
+\def\cH{\mathcal{H}}
+\def\cI{\mathcal{I}}
+\def\cL{\mathcal{L}}
+\def\cN{\mathcal{N}}
+\def\cS{\mathcal{S}}
+\def\cP{\mathcal{P}}
+\def\cI{\mathcal{I}}
+\def\cE{\mathcal{E}}
+\def\cM{\mathcal{M}}
+\def\cJ{\mathcal{J}}
+\def\cT{\mathcal{T}}
+\def\cW{\mathcal{W}}
+\def\cX{\mathcal{X}}
+\def\blambda{\boldsymbol{\lambda}}
+\def\bmu{\boldsymbol{\mu}}
+
+\def\iY{\boldsymbol{Y}}
+\def\bepsilon{\boldsymbol{\eps}}
+
+\def\Spd{\mathbb{S}^{n}_{++}}
+\def\Spsd{\mathbb{S}^{n}_{+}}
+
+\def\SD{\text{StdDev}}
+\def\Var{\text{Var}}
+\def\oneinf{\mathbf{1}_{\infty}}
+\def\Fourier{\boldsymbol{\mathcal{F}}}
+
+\def\CovMtx {\boldsymbol{\Sigma}_{\vth}}
+\def\CovMtxSeq  {\boldsymbol{\Sigma}_{\hat{\vth}^{(N)}}}
+\def\bSigma {\boldsymbol{\Sigma}}
+
+\newcommand{\etal}{{\em et al.}~}
+\newcommand{\ie}{{\em i.e.,} }
+\newcommand{\eg}{{\em e.g.,} }
+\newcommand{\etc}{{\em etc.,} }
+\newcommand{\wrt}{{\em w.r.t.} }
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
