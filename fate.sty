@@ -195,12 +195,17 @@
 \newaliascnt{lemmaTh}{theorem}% alias counter "<newTh>"
 \newtheorem{lemma}[lemmaTh]{Lemma}
 \aliascntresetthe{lemmaTh}
-\providecommand*{\lemmaThauthorefname}{Corollary} % name for \autoref
+\providecommand*{\lemmaThautorefname}{Corollary} % name for \autoref
+
+\newaliascnt{conjectureTh}{theorem}% alias counter "<newTh>"
+\newtheorem{conjecture}[conjectureTh]{Conjecture}
+\aliascntresetthe{conjectureTh}
+\providecommand*{\conjectureThautorefname}{Conjecture} % name for \autoref
 
 \newaliascnt{propositionTh}{theorem}% alias counter "<newTh>"
 \newtheorem{proposition}[propositionTh]{Proposition}
 \aliascntresetthe{propositionTh}
-\providecommand*{\propositionThauthorefname}{Proposition} % name for \autoref
+\providecommand*{\propositionThautorefname}{Proposition} % name for \autoref
 
 \newtheorem{definition}{Definition}
 \providecommand*{\definitionautorefname}{Definition}
